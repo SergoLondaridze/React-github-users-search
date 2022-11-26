@@ -20,12 +20,7 @@ function App() {
   const [name, setName] = useState('');
   const [mode, setMode] = useState(false);
   const [twitter, setTwitter] = useState('');
-  let backgroundcolor;
-  let colorp1;
-  let colorinput;
-  let colorp2;
-  let repandfoll;
-  let info;
+  let backgroundcolor, colorp1, colorinput, colorp2, repandfoll, info;
   function changeMode() {
     if (mode) {
       backgroundcolor = '#141D2F'
@@ -40,12 +35,11 @@ function App() {
       colorp2 = '#4B6A9B'
       repandfoll = '#F6F8FF'
     }
-
   }
   async function getUser() {
     await fetch(`https://api.github.com/users/${user}`).then((response) => { return response.json(); }).then((json) => {
       info = json
-      if (info.message === undefined) {
+      if (info.message !== "Not Found") {
         setUser(info.login);
         setFollowers(info.followers);
         setTime(info['created_at']);
@@ -58,14 +52,14 @@ function App() {
         setCompany(info.company);
         setName(info.name);
         setShowinfo(true);
+        setShowresult(true);
       } else {
         setShowinfo(false);
         setShowresult(false);
       }
+
     })
-
   }
-
   async function getRepos() {
     await fetch(`https://api.github.com/users/${user}/repos`).then((response) => { return response.json(); }).then((json) => {
       info = json
@@ -80,9 +74,11 @@ function App() {
       <div className="App" style={{ backgroundColor: backgroundcolor }}>
         <div className='container'>
           <Defindersection setMode={setMode} backgroundcolor={backgroundcolor} colorp1={colorp1} />
-          {showresult || <p className='noresult'>No results</p>}
+          {showresult ? null : <p className='noresult'>No results</p>}
           <Search setUser={setUser} user={user} colorinput={colorinput} colorp2={colorp2} getUser={getUser} getRepos={getRepos} />
-          {showinfo && <Userinfo repandfoll={repandfoll} colorp1={colorp1} colorp2={colorp2} colorinput={colorinput} bio={bio} name={name} company={company} user={user} repos={repos} followers={followers} following={following} time={time} avatar={avatar} location={location} blog={blog} twitter={twitter} />}
+          {showinfo && <Userinfo repandfoll={repandfoll} colorp1={colorp1} colorp2={colorp2} colorinput={colorinput}
+            bio={bio} name={name} company={company} user={user} repos={repos}
+            followers={followers} following={following} time={time} avatar={avatar} location={location} blog={blog} twitter={twitter} />}
         </div>
       </div>
     </div>
